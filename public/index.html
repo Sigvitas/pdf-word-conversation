@@ -41,7 +41,7 @@
             if (data.success) {
                 convertBtn.disabled = true;
                 alertMessage.style.display = 'none';
-                downloadLink.innerHTML = `<a href="/download/${data.fileName}">Download Converted File</a>`;
+           downloadLink.innerHTML = `<a href="https://pdf2word-converstion.onrender.com${data.downloadLink}">Download Converted File</a>`;`;
                 downloadLink.style.display = 'block';
             } else {
                 console.error('Conversion failed:', data.error);
