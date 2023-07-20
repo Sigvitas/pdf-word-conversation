@@ -1,0 +1,43 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PDF to Word Converter</title>
+</head>
+
+<body>
+    <input type="file" id="pdfFileInput">
+    <button onclick="convertPDF()">Convert</button>
+
+    <script>
+        function convertPDF() {
+            const fileInput = document.getElementById('pdfFileInput');
+            const formData = new FormData();
+            formData.append('pdfFile', fileInput.files[0]);
+
+            fetch('/convert', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Automatically initiate download using the download link from the server response
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = data.downloadLink;
+                        downloadLink.download = 'converted_word_file.docx';
+                        downloadLink.click();
+                    } else {
+                        alert('Error converting PDF to Word. Please try again.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        }
+    </script>
+</body>
+
+</html>

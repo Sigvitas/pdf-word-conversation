@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Conversion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>PDF to Word Conversion</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="pdfFile" id="pdfFileInput" accept=".pdf" required>
+            <label for="pdfFileInput" class="file-label">Choose File</label>
+            <button type="submit" id="convertBtn">Convert to Word</button>
+        </form>
+        <div id="alertMessage" class="alert-message" style="display:none">Your file is being processed. Please wait...
+        </div>
+        <div id="downloadLink" style="display:none"></div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const alertMessage = document.getElementById('alertMessage');
+
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            alertMessage.style.display = 'block';
+
+            const formData = new FormData(uploadForm);
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                convertBtn.disabled = true;
+                alertMessage.style.display = 'none';
+                downloadLink.innerHTML = `<a href="/download/${data.fileName}">Download Converted File</a>`;
+                downloadLink.style.display = 'block';
+            } else {
+                console.error('Conversion failed:', data.error);
+                alertMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Conversion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #uploadForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #downloadLink {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="pdfFile" accept=".pdf" required>
+            <button type="submit">Convert to Word</button>
+        </form>
+
+        <!-- Add the download button with a unique ID -->
+        <a id="downloadLink" style="display: none;">Download Converted File</a>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const downloadLink = document.getElementById('downloadLink');
+
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(uploadForm);
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Display the download button and set the download link
+                downloadLink.href = data.downloadLink;
+                downloadLink.download = data.fileName; // Use the same filename from the server response
+                downloadLink.style.display = 'block';
+            } else {
+                console.error('Conversion failed:', data.error);
+            }
+        });
+    </script>
+</body>
+
+</html>
