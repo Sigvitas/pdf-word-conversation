@@ -6,11 +6,9 @@ const multer = require('multer');
 
 const app = express();
 
-// Replace these values with your Adobe PDF Services credentials
 const clientId = '91577da1f28244d0b2aff95d03b991b9';
 const clientSecret = 'p8e-V-JiD-0gmgnFBEEhtWp0WDcQOpddNO6h';
 
-// Configure multer to handle the file upload
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads');
@@ -30,7 +28,6 @@ const upload = multer({
     },
 });
 
-// Route to handle file upload and conversion
 app.post('/convert', upload.single('pdfFile'), async (req, res) => {
     try {
         const credentials = PDFServicesSdk.Credentials
@@ -72,13 +69,10 @@ app.post('/convert', upload.single('pdfFile'), async (req, res) => {
     }
 });
 
-// Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve the files from the 'output' directory
 app.use('/output', express.static(path.join(__dirname, 'output')));
 
-// Route to handle file download
 app.get('/download/:filename', (req, res) => {
     const filePath = path.join(__dirname, 'output', req.params.filename);
     const fileName = path.basename(filePath);
@@ -91,7 +85,7 @@ app.get('/download/:filename', (req, res) => {
     });
 });
 
-// Root URL route (handle GET requests for the root URL)
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
